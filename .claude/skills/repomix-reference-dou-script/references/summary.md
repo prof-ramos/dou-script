@@ -1,4 +1,4 @@
-This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
 
 # Summary
 
@@ -31,27 +31,33 @@ This skill contains the following reference files:
 
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
-- Files matching these patterns are excluded: __pycache__
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
 - Files are sorted by Git change count (files with more changes are at the bottom)
 
 ## Statistics
 
-12 files | 992 lines
+42 files | 5,939 lines
 
 | Language | Files | Lines |
 |----------|------:|------:|
-| Python | 12 | 992 |
+| Markdown | 21 | 4,262 |
+| Python | 10 | 1,018 |
+| JSON | 3 | 348 |
+| Shell | 3 | 172 |
+| Text | 2 | 18 |
+| EXAMPLE | 1 | 40 |
+| TOML | 1 | 37 |
+| No Extension | 1 | 44 |
 
 **Largest files:**
-- `test_utils.py` (212 lines)
-- `utils.py` (200 lines)
-- `test_mre.py` (137 lines)
-- `download_dou.py` (135 lines)
-- `auto_download_xml.py` (99 lines)
-- `test_config.py` (99 lines)
-- `conftest.py` (65 lines)
-- `config.py` (33 lines)
-- `__init__.py` (3 lines)
-- `__init__.py` (3 lines)
+- `REFACTOR_PLAN.md` (650 lines)
+- `docs/ARQUITETURA.md` (443 lines)
+- `README.md` (410 lines)
+- `docs/DIAGRAMA.md` (293 lines)
+- `REFACTOR_FINDINGS.md` (260 lines)
+- `ARCHITECTURE.md` (257 lines)
+- `.omc/project-memory.json` (245 lines)
+- `REFACTOR_PHASE3_SUMMARY.md` (232 lines)
+- `tests/test_utils.py` (212 lines)
+- `dou/utils.py` (200 lines)

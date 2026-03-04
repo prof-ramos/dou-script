@@ -1,11 +1,11 @@
 ---
 name: repomix-reference-dou-script
-description: Reference codebase for Dou. Use this skill when you need to understand the structure, implementation patterns, or code details of the Dou project.
+description: Reference codebase for Dou Script. Use this skill when you need to understand the structure, implementation patterns, or code details of the Dou Script project.
 ---
 
-# Dou Codebase Reference
+# Dou Script Codebase Reference
 
-12 files | 992 lines | 9069 tokens
+42 files | 5939 lines | 49585 tokens
 
 ## Overview
 
@@ -22,6 +22,7 @@ Use this skill when you need to:
 | `references/summary.md` | **Start here** - Purpose, format explanation, and statistics |
 | `references/project-structure.md` | Directory tree with line counts per file |
 | `references/files.md` | All file contents (search with `## File: <path>`) |
+| `references/tech-stack.md` | Languages, frameworks, and dependencies |
 
 ## How to Use
 
@@ -71,6 +72,7 @@ function calculateTotal
 - Use line counts in `project-structure.md` to estimate file complexity
 - Search `## File:` pattern to jump between files
 - Check `summary.md` for excluded files, format details, and file statistics
+- Check `tech-stack.md` for languages, frameworks, and dependencies
 
 ---
 
