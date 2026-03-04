@@ -1,57 +1,82 @@
-from datetime import date
+######################################################################
+## INLABS                                                           ##
+## Script desenvolvido em Python para download automático de XMLs   ##
+## Autor: https://github.com/Iakim                                  ##
+## A simplicidade é o último grau de sofisticação                   ##
+######################################################################
+
+import os
+import sys
 import requests
+from datetime import date
 
-login = "email@dominio.com"
-senha = "minha_senha"
+login    = "email@dominio.com"
+senha    = "sua_senha"
 
-tipo_dou="DO1 DO2 DO3 DO1E DO2E DO3E" # Seções separadas por espaço
-# Opções DO1 DO2 DO3 DO1E DO2E DO3E
+## Seções disponíveis: DO1 DO2 DO3 DO1E DO2E DO3E
+tipo_dou = "DO1 DO2 DO3 DO1E DO2E DO3E"
 
-url_login = "https://inlabs.in.gov.br/logar.php"
-url_download = "https://inlabs.in.gov.br/index.php?p="
+## Configuração de proxy opcional (via variável de ambiente)
+## Exemplo: export SOCKS5_PROXY=socks5://127.0.0.1:1080
+PROXY = os.environ.get("SOCKS5_PROXY") or os.environ.get("HTTPS_PROXY")
 
-payload = {"email" : login, "password" : senha}
-headers = {
-    "Content-Type": "application/x-www-form-urlencoded",
-    "Accept" : "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-    }
+URL_LOGIN    = "https://inlabs.in.gov.br/logar.php"
+URL_DOWNLOAD = "https://inlabs.in.gov.br/index.php?p="
+HEADERS_BASE = {"origem": "736372697074"}
+
 s = requests.Session()
+if PROXY:
+    s.proxies.update({"http": PROXY, "https": PROXY})
 
-def download():
-    if s.cookies.get('inlabs_session_cookie'):
-        cookie = s.cookies.get('inlabs_session_cookie')
-    else:
-        print("Falha ao obter cookie. Verifique suas credenciais");
-        exit(37)
-    
-    # Montagem da URL:
-    ano = date.today().strftime("%Y")
-    mes = date.today().strftime("%m")
-    dia = date.today().strftime("%d")
-    data_completa = ano + "-" + mes + "-" + dia
-    
-    for dou_secao in tipo_dou.split(' '):
-        print("Aguarde Download...")
-        url_arquivo = url_download + data_completa + "&dl=" + data_completa + "-" + dou_secao + ".zip"
-        cabecalho_arquivo = {'Cookie': 'inlabs_session_cookie=' + cookie, 'origem': '736372697074'}
-        response_arquivo = s.request("GET", url_arquivo, headers = cabecalho_arquivo)
-        if response_arquivo.status_code == 200:
-            with open(data_completa + "-" + dou_secao + ".zip", "wb") as f:
-                f.write(response_arquivo.content)
-                print("Arquivo %s salvo." % (data_completa + "-" + dou_secao + ".zip"))
-            del response_arquivo
-            del f
-        elif response_arquivo.status_code == 404:
-            print("Arquivo não encontrado: %s" % (data_completa + "-" + dou_secao + ".zip"))
-    
-    print("Aplicação encerrada")
-    exit(0)
 
-def login():
-    try:
-        response = s.request("POST", url_login, data=payload, headers=headers)
-        download()
-    except requests.exceptions.ConnectionError:
-        login()
-login()
+def fazer_login():
+    headers = {
+        **HEADERS_BASE,
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    }
+    for tentativa in range(1, 4):
+        try:
+            s.post(URL_LOGIN, data={"email": login, "password": senha},
+                   headers=headers, timeout=30)
+            if s.cookies.get("inlabs_session_cookie"):
+                print("Login realizado com sucesso.")
+                return True
+        except requests.exceptions.ConnectionError:
+            print(f"Tentativa {tentativa}/3: erro de conexão.")
+    print("Falha de autenticação. Verifique suas credenciais.")
+    return False
 
+
+def main():
+    if not fazer_login():
+        sys.exit(1)
+
+    cookie       = s.cookies.get("inlabs_session_cookie")
+    hoje         = date.today()
+    data_str     = hoje.strftime("%Y-%m-%d")
+    todos        = []
+
+    for secao in tipo_dou.split():
+        print("Aguarde download...")
+        nome      = f"{data_str}-{secao}.zip"
+        url       = f"{URL_DOWNLOAD}{data_str}&dl={nome}"
+        headers   = {"Cookie": f"inlabs_session_cookie={cookie}", **HEADERS_BASE}
+        r = s.get(url, headers=headers, timeout=60)
+        if r.status_code == 200 and len(r.content) > 1_000:
+            with open(nome, "wb") as f:
+                f.write(r.content)
+            todos.append(nome)
+            print(f"Arquivo {nome} salvo.")
+        elif r.status_code == 404:
+            print(f"Arquivo não encontrado: {nome}")
+
+    if not todos:
+        print("Nenhum arquivo disponível para hoje.")
+        sys.exit(0)
+
+    print(f"\n{len(todos)} arquivo(s) baixado(s).")
+
+
+if __name__ == "__main__":
+    main()
