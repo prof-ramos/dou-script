@@ -1,0 +1,169 @@
+# 📰 DOU Script - Download Automatizado do Diário Oficial da União
+
+Scripts Python para download automatizado do Diário Oficial da União (DOU) através do serviço [IN Labs](https://inlabs.in.gov.br).
+
+## 🎯 Funcionalidades
+
+- **Download automático** de PDFs e XMLs das seções do DOU
+- **Agendamento automático** via cron (10h, 12h, 23h)
+- **Detecção de duplicatas** - Evita baixar o mesmo DOU múltiplas vezes
+- **Suporte a múltiplas seções** - DO1 (Executivo), DO2 (Legislativo), DO3 (Judiciário)
+
+## 📋 Pré-requisitos
+
+- Python 3.8+
+- Conta ativa no [IN Labs](https://inlabs.in.gov.br)
+- Biblioteca `requests`
+
+## 🚀 Instalação Rápida
+
+```bash
+# 1. Clone o repositório
+git clone <url-do-repositorio>
+# Substitua <url-do-repositorio> pela URL do seu repositório (ex: https://github.com/usuario/dou-script.git)
+cd dou-script
+
+# 2. Configure suas credenciais
+cp .env.example .env
+# Edite .env com suas credenciais IN Labs
+
+# 3. Instale dependências
+pip install -r requirements.txt
+
+# 4. Configure o agendamento automático (opcional)
+# O arquivo cron-dou.sh está no diretório do projeto
+crontab cron-dou.sh
+```
+
+## 📖 Uso
+
+### Download Manual
+
+```bash
+# Baixar DOU de hoje (PDF)
+python3 public/python/inlabs-auto-download-pdf.py
+
+# Baixar DOU de hoje (XML)
+python3 public/python/inlabs-auto-download-xml.py
+```
+
+**Nota:** As credenciais devem ser configuradas no arquivo `.env` (veja seção de Instalação Rápida).
+
+**Importante:** Evite usar `export` para definir credenciais diretamente no terminal, pois isso pode deixar suas credenciais no histórico do shell. Use sempre o arquivo `.env`. Se você usou `export` anteriormente, limpe o histórico do shell com `history -c`.
+
+### Agendamento Automático
+
+O script está configurado para rodar automaticamente via cron:
+
+- **10h** - Download DOU da manhã
+- **12h** - Verifica se é o mesmo DOU (apaga se for duplicata)
+- **23h** - Verifica duplicata final (mantém última versão)
+
+**Dias de execução:** Segunda a Sexta
+
+```bash
+# Verificar cron instalado
+crontab -l
+
+# Editar cron
+crontab -e
+```
+
+## 📂 Estrutura do Projeto
+
+```
+dou-script/
+├── public/
+│   ├── python/
+│   │   ├── inlabs-auto-download-pdf.py    # Download PDF
+│   │   └── inlabs-auto-download-xml.py    # Download XML
+│   └── bash/
+│       ├── inlabs-auto-download-pdf.sh    # Wrapper shell PDF
+│       └── inlabs-auto-download-xml.sh    # Wrapper shell XML
+├── .env.example                           # Template de configuração
+├── .gitignore                             # Arquivos ignorados
+├── cron-dou.sh                            # Script de agendamento
+├── requirements.txt                        # Dependências
+├── requirements-dev.txt                    # Dependências de dev
+└── pyproject.toml                         # Configuração Python
+```
+
+## 🔐 Segurança
+
+- **NUNCA** faça commit do arquivo `.env` (já está no `.gitignore`)
+- Mantenha suas credenciais IN Labs seguras
+- O script usa variáveis de ambiente para evitar credenciais hardcoded
+
+## 🛠️ Desenvolvimento
+
+### Dependências
+
+```bash
+# Produção
+pip install -r requirements.txt
+
+# Desenvolvimento
+pip install -r requirements-dev.txt
+```
+
+### Formatação de Código
+
+```bash
+# Formatar com Black
+black public/python/ --line-length 100
+
+# Verificar formatação
+black --check public/python/
+
+# Lint com Flake8
+flake8 public/python/ --max-line-length=100
+```
+
+## 📝 Arquivos de Saída
+
+Os arquivos baixados seguem o padrão: `YYYY-MM-DD-SEÇÃO.ext`
+
+**Exemplos:**
+- `2024-01-15-do1.pdf` - DO1 Executivo em PDF
+- `2024-01-15-do2.pdf` - DO2 Legislativo em PDF
+- `2024-01-15-do3.pdf` - DO3 Judiciário em PDF
+- `2024-01-15-DO1.zip` - DO1 Executivo em XML
+- `2024-01-15-DO2.zip` - DO2 Legislativo em XML
+- `2024-01-15-DO3.zip` - DO3 Judiciário em XML
+
+## 🔧 Solução de Problemas
+
+### "Falha ao obter cookie"
+- Verifique suas credenciais no arquivo `.env`
+- Confirme que sua conta IN Labs está ativa
+- Verifique se o site IN Labs está acessível
+
+### "Arquivo não encontrado" (404)
+- O DOU pode não ter sido publicado no dia
+- Finais de semana e feriados podem não ter DOU
+- Edições extras (DO1E, DO2E, DO3E) nem sempre existem
+
+### Erro de conexão
+- Verifique sua conexão com a internet
+- O script tenta novamente automaticamente em caso de falha
+
+## 📄 Licença
+
+Este projeto é fornecido "como está", sem garantias.
+
+## 🤝 Contribuições
+
+Contribuições são bem-vindas! Sinta-se à vontade para:
+- Reportar bugs
+- Sugerir melhorias
+- Enviar pull requests
+
+## 📞 Suporte
+
+Para questões sobre o DOU ou o serviço IN Labs, consulte:
+- [IN Labs](https://inlabs.in.gov.br) - Serviço oficial de downloads
+- [Imprensa Nacional](http://www.in.gov.br/) - Portal oficial do DOU
+
+---
+
+**Desenvolvido para automatizar downloads do Diário Oficial da União**

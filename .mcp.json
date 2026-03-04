@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    // Nota: Serviços removidos (python-sdk, docker, jupyter, postgresql, opik, memory-bank, sequential-thinking, brave-search, google-maps, deep-graph)
+    // por não serem utilizados em projeto de scripts Python simples. Mantidos apenas filesystem e context7.
+    "filesystem": {
+      "name": "Filesystem MCP",
+      "description": "Acesso ao sistema de arquivos para operações com scripts DOU",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "."
+      ],
+      "env": {}
+    },
+    "context7": {
+      "name": "Context7 MCP",
+      "description": "Busca em documentação técnica e Python docs",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@context7/mcp-server"
+      ],
+      "env": {}
+    }
+  }
+}

@@ -1,0 +1,5 @@
+# Dependências do dou-script
+# Script de download automatizado do Diário Oficial da União
+
+# Biblioteca para requisições HTTP (usada em ambos os scripts)
+requests>=2.31.0

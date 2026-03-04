@@ -1,8 +1,10 @@
 from datetime import date
 import requests
+import os
 
-login = "email@dominio.com"
-senha = "sua_senha"
+# Usa variáveis de ambiente ou valores padrão
+login = os.getenv("INLABS_EMAIL", "email@dominio.com")
+senha = os.getenv("INLABS_PASSWORD", "sua_senha")
 
 ## Tipos de Diários Oficiais da União permitidos: do1 do2 do3 (Contempla as edições extras) ##
 tipo_dou="do1 do2 do3"
@@ -28,7 +30,7 @@ def download():
     mes = date.today().strftime("%m")
     dia = date.today().strftime("%d")
     data_completa = ano + "-" + mes + "-" + dia
-    
+
     # Download inicial
     for dou_secao in tipo_dou.split(' '):
         print("Aguarde Download...")

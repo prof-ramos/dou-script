@@ -1,0 +1,76 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Edit",
+      "MultiEdit",
+      "Write",
+      "Bash(python:*)",
+      "Bash(pip:*)",
+      "Bash(bash:*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(git:*)",
+      "Bash(black:*)",
+      "Bash(flake8:*)",
+      "Bash(isort:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(rm -r:*)",
+      "Bash(rm -R:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)"
+    ],
+    "defaultMode": "allowEdits"
+  },
+  "env": {
+    "BASH_DEFAULT_TIMEOUT_MS": "60000",
+    "BASH_MAX_OUTPUT_LENGTH": "20000",
+    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1",
+    "PYTHONPATH": "public/python"
+  },
+  "includeCoAuthoredBy": true,
+  "cleanupPeriodDays": 30,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(echo $STDIN_JSON | jq -r '.tool_input.file_path // \"\"'); if [[ \"$FILE\" =~ \\.py$ ]]; then CONTENT=$(echo $STDIN_JSON | jq -r '.tool_input.content // \"\"'); if echo \"$CONTENT\" | grep -q 'print('; then echo '💡 Dica: Considere usar logging ao invés de print()' >&2; fi; fi; if ! command -v jq >/dev/null 2>&1; then echo '⚠️ jq não encontrado, alguns hooks podem falhar' >&2; fi",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(echo $STDIN_JSON | jq -r '.tool_input.file_path // \"\"'); if [[ -n \"$FILE\" ]] && [[ \"$FILE\" =~ \\.py$ ]] && command -v black >/dev/null 2>&1; then black \"$FILE\" --line-length 100 2>/dev/null && echo \"✓ Black formatado: $(basename $FILE)\" || true; fi",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f requirements.txt ]; then echo ''; echo '📦 Dependências do projeto:'; cat requirements.txt 2>/dev/null || echo 'Nenhuma dependência extra definida'; echo ''; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
