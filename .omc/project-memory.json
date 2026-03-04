@@ -1,0 +1,119 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1772600334543,
+  "projectRoot": "/Users/gabrielramos/dou-script",
+  "techStack": {
+    "languages": [
+      {
+        "name": "Python",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "pyproject.toml",
+          "requirements.txt"
+        ]
+      }
+    ],
+    "frameworks": [],
+    "packageManager": "pip",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": "pytest",
+    "lintCommand": "ruff check",
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "docs",
+      "public"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "__pycache__": {
+      "path": "__pycache__",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1772600334519,
+      "keyFiles": [
+        "test-mre.cpython-314.pyc"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 3,
+      "lastAccessed": 1772600334520,
+      "keyFiles": [
+        "ARQUITETURA.md",
+        "DIAGRAMA.md",
+        "VISAO_GERAL.md"
+      ]
+    },
+    "output": {
+      "path": "output",
+      "purpose": null,
+      "fileCount": 8,
+      "lastAccessed": 1772600334520,
+      "keyFiles": [
+        "2026-03-02-DO1.zip",
+        "2026-03-02-DO1E.zip",
+        "2026-03-02-DO2-MRE.txt",
+        "2026-03-02-DO2.zip",
+        "2026-03-02-DO3.zip"
+      ]
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 0,
+      "lastAccessed": 1772600334520,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "public/python/inlabs-filter-mre.py",
+      "accessCount": 26,
+      "lastAccessed": 1772600606369,
+      "type": "file"
+    },
+    {
+      "path": "public/python/inlabs-auto-download-xml.py",
+      "accessCount": 5,
+      "lastAccessed": 1772600553240,
+      "type": "file"
+    },
+    {
+      "path": "REFACTOR_PLAN.md",
+      "accessCount": 2,
+      "lastAccessed": 1772600381785,
+      "type": "file"
+    },
+    {
+      "path": "test-mre.py",
+      "accessCount": 2,
+      "lastAccessed": 1772600562989,
+      "type": "file"
+    },
+    {
+      "path": "REFACTOR_PHASE1_SUMMARY.md",
+      "accessCount": 1,
+      "lastAccessed": 1772600661782,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

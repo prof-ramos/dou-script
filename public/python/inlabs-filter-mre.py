@@ -5,14 +5,21 @@ Baixa XMLs do DOU e filtra por palavras-chave do Ministério das Relações Exte
 """
 
 from datetime import date
+from typing import Optional, List, Dict
+from io import BytesIO
+from zipfile import ZipFile, BadZipFile
 import requests
 import os
 import time
 import zipfile
-import xml.etree.ElementTree as ET
-from io import BytesIO
 import re
 import html
+import logging
+from requests.exceptions import RequestException
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # Configurações
 OUTPUT_DIR = "output"
@@ -47,7 +54,7 @@ headers = {
 
 s = requests.Session()
 
-def extrair_texto_xml(conteudo_zip):
+def extrair_texto_xml(conteudo_zip: bytes) -> Optional[str]:
     """Extrai texto de arquivo XML dentro do ZIP"""
     try:
         with zipfile.ZipFile(BytesIO(conteudo_zip)) as zip_ref:
@@ -55,11 +62,15 @@ def extrair_texto_xml(conteudo_zip):
                 if arquivo.endswith('.xml'):
                     xml_content = zip_ref.read(arquivo)
                     return xml_content.decode('utf-8', errors='ignore')
+    except BadZipFile as e:
+        logger.error(f"ZIP corrompido: {e}")
+    except (IOError, OSError) as e:
+        logger.error(f"Erro de I/O: {e}")
     except Exception as e:
-        print(f"Erro ao extrair XML: {e}")
+        logger.error(f"Erro inesperado ao extrair XML: {e}")
     return ""
 
-def limpar_texto_xml(texto):
+def limpar_texto_xml(texto: str) -> str:
     """Limpa e padroniza texto XML extraído do DOU"""
     # Decodificar entidades HTML
     texto = html.unescape(texto)
@@ -78,7 +89,7 @@ def limpar_texto_xml(texto):
 
     return texto.strip()
 
-def filtrar_conteudo(texto_xml, palavras_chave):
+def filtrar_conteudo(texto_xml: str, palavras_chave: List[str]) -> List[Dict[str, str]]:
     """Filtra conteúdo pelas palavras-chave"""
     trechos_encontrados = []
 
@@ -107,10 +118,10 @@ def filtrar_conteudo(texto_xml, palavras_chave):
 
     return trechos_encontrados
 
-def salvar_resultados(data_hoje, trechos, secao):
+def salvar_resultados(data_hoje: str, trechos: List[Dict[str, str]], secao: str) -> bool:
     """Salva os trechos filtrados em arquivo"""
     if not trechos:
-        return
+        return False
 
     # Criar diretório de output se não existir
     os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -124,9 +135,10 @@ def salvar_resultados(data_hoje, trechos, secao):
             f.write(f"CONTEXTO:\n{trecho['contexto']}\n")
             f.write("-" * 80 + "\n\n")
 
-    print(f"  ✓✓ {len(trechos)} trechos salvos: {nome_arquivo}")
+    logger.info(f"  ✓✓ {len(trechos)} trechos salvos: {nome_arquivo}")
+    return True
 
-def download_xml_filtrado():
+def download_xml_filtrado() -> bool:
     """Baixa XMLs e filtra por palavras-chave MRE"""
     # Realizar login com retry loop e exponential backoff
     max_attempts = 3
@@ -137,22 +149,22 @@ def download_xml_filtrado():
             response = s.request("POST", url_login, data=payload, headers=headers)
             if response.status_code == 200:
                 break
-        except requests.exceptions.ConnectionError:
+        except RequestException as e:
             if attempt < max_attempts - 1:
                 wait_time = 2 ** attempt  # 1s, 2s, 4s
-                print(f"Erro de conexão, tentando novamente em {wait_time}s...")
+                logger.warning(f"Erro de conexão, tentando novamente em {wait_time}s...")
                 time.sleep(wait_time)
             else:
-                print("❌ Erro de conexão após múltiplas tentativas")
+                logger.error(f"Erro de conexão após múltiplas tentativas: {e}")
                 return False
 
     # Verificar cookie
     if not s.cookies.get('inlabs_session_cookie'):
-        print("❌ Falha ao obter cookie. Verifique suas credenciais")
+        logger.error("Falha ao obter cookie. Verifique suas credenciais")
         return False
 
     cookie = s.cookies.get('inlabs_session_cookie')
-    print(f"✓ Login realizado com sucesso")
+    logger.info("Login realizado com sucesso")
 
     # Data atual
     ano = date.today().strftime("%Y")
@@ -162,7 +174,7 @@ def download_xml_filtrado():
 
     # Download e filtragem de cada seção
     for dou_secao in tipo_dou.split():
-        print(f"\n📥 Processando {dou_secao}...")
+        logger.info(f"Processando {dou_secao}...")
 
         # Construir URL de download
         url_arquivo = f"{url_download}{data_completa}&dl={data_completa}-{dou_secao}.zip"
@@ -178,41 +190,47 @@ def download_xml_filtrado():
         if response_arquivo.status_code == 200:
             # Salvar ZIP
             nome_zip = f"{data_completa}-{dou_secao}.zip"
-            with open(nome_zip, 'wb') as f:
-                f.write(response_arquivo.content)
-
-            # Extrair e filtrar conteúdo
-            print(f"  ✓ Baixado: {nome_zip}")
-
-            texto_xml = extrair_texto_xml(response_arquivo.content)
-            trechos_encontrados = filtrar_conteudo(texto_xml, PALAVRAS_CHAVE)
-
-            if trechos_encontrados:
-                salvar_resultados(data_completa, trechos_encontrados, dou_secao)
-            else:
-                print(f"  - Nenhum trecho MRE encontrado")
-
-            # Remover ZIP (não é mais necessário)
             try:
-                os.remove(nome_zip)
-            except OSError as e:
-                print(f"  ⚠️  Aviso: não foi possível remover {nome_zip}: {e}")
+                with open(nome_zip, 'wb') as f:
+                    f.write(response_arquivo.content)
+
+                # Extrair e filtrar conteúdo
+                logger.info(f"Baixado: {nome_zip}")
+
+                texto_xml = extrair_texto_xml(response_arquivo.content)
+                if texto_xml is None:
+                    logger.warning(f"Não foi possível extrair XML de {nome_zip}")
+                    continue
+                trechos_encontrados = filtrar_conteudo(texto_xml, PALAVRAS_CHAVE)
+
+                if trechos_encontrados:
+                    salvar_resultados(data_completa, trechos_encontrados, dou_secao)
+                else:
+                    logger.info(f"Nenhum trecho MRE encontrado em {dou_secao}")
+
+                # Remover ZIP (não é mais necessário)
+                try:
+                    os.remove(nome_zip)
+                except OSError as e:
+                    logger.warning(f"Não foi possível remover {nome_zip}: {e}")
+            except (IOError, OSError) as e:
+                logger.error(f"Erro de I/O ao processar {nome_zip}: {e}")
 
         elif response_arquivo.status_code == 404:
             nome_zip = f"{data_completa}-{dou_secao}.zip"
-            print(f"  - Arquivo não encontrado: {nome_zip}")
+            logger.info(f"Arquivo não encontrado: {nome_zip}")
         else:
-            print(f"  ❌ Erro no download: HTTP {response_arquivo.status_code}")
+            logger.error(f"Erro no download: HTTP {response_arquivo.status_code}")
 
-    print(f"\n✅ Processamento concluído")
+    logger.info("Processamento concluído")
     return True
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("📰 DOU Download + Filtragem MRE")
-    print("=" * 60)
-    print(f"📅 Data: {date.today().strftime('%d/%m/%Y')}")
-    print(f"🔍 Palavras-chave: {', '.join(PALAVRAS_CHAVE[:5])}...")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("📰 DOU Download + Filtragem MRE")
+    logger.info("=" * 60)
+    logger.info(f"📅 Data: {date.today().strftime('%d/%m/%Y')}")
+    logger.info(f"🔍 Palavras-chave: {', '.join(PALAVRAS_CHAVE[:5])}...")
+    logger.info("=" * 60)
 
     download_xml_filtrado()
