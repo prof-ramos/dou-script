@@ -40,11 +40,14 @@ crontab cron-dou.sh
 ### Download Manual
 
 ```bash
-# Baixar DOU de hoje (PDF)
-python3 public/python/inlabs-auto-download-pdf.py
+# Baixar DOU de hoje (XML com filtragem MRE)
+python3 scripts/download_dou.py
 
-# Baixar DOU de hoje (XML)
-python3 public/python/inlabs-auto-download-xml.py
+# Baixar DOU de data específica
+python3 scripts/test_mre.py 2026-03-02
+
+# Baixar XMLs brutos (sem filtragem)
+python3 scripts/auto_download_xml.py
 ```
 
 **Nota:** As credenciais devem ser configuradas no arquivo `.env` (veja seção de Instalação Rápida).
@@ -73,20 +76,39 @@ crontab -e
 
 ```
 dou-script/
-├── public/
-│   ├── python/
-│   │   ├── inlabs-auto-download-pdf.py    # Download PDF
-│   │   └── inlabs-auto-download-xml.py    # Download XML
-│   └── bash/
-│       ├── inlabs-auto-download-pdf.sh    # Wrapper shell PDF
-│       └── inlabs-auto-download-xml.sh    # Wrapper shell XML
-├── .env.example                           # Template de configuração
-├── .gitignore                             # Arquivos ignorados
-├── cron-dou.sh                            # Script de agendamento
-├── requirements.txt                        # Dependências
-├── requirements-dev.txt                    # Dependências de dev
-└── pyproject.toml                         # Configuração Python
+├── dou/                    # Pacote Python principal
+│   ├── __init__.py         # exports do pacote
+│   ├── config.py           # configurações (URLs, palavras-chave)
+│   └── utils.py            # funções compartilhadas (XML, filtragem)
+├── scripts/                # Scripts executáveis
+│   ├── download_dou.py     # script principal de download
+│   ├── test_mre.py         # teste com data específica
+│   └── auto_download_xml.py # download de XMLs brutos
+├── tests/                  # Testes unitários
+│   ├── test_config.py      # testes de configuração
+│   ├── test_utils.py       # testes de utilitários
+│   └── conftest.py         # fixtures pytest
+├── output/                 # Resultados filtrados
+├── cron-dou.sh             # Wrapper para agendamento cron
+├── requirements.txt        # Dependências
+├── requirements-dev.txt    # Dependências de desenvolvimento
+└── README.md
 ```
+
+## 🧪 Testes
+
+```bash
+# Rodar todos os testes
+pytest tests/ -v
+
+# Rodar com coverage
+pytest tests/ --cov=dou --cov-report=term-missing
+
+# Rodar teste específico
+pytest tests/test_utils.py::TestLimparTextoXML -v
+```
+
+**Coverage atual:** 94% (37 testes)
 
 ## 🔐 Segurança
 
@@ -110,13 +132,16 @@ pip install -r requirements-dev.txt
 
 ```bash
 # Formatar com Black
-black public/python/ --line-length 100
+black dou/ scripts/ tests/ --line-length 100
 
 # Verificar formatação
-black --check public/python/
+black --check dou/ scripts/ tests/
 
 # Lint com Flake8
-flake8 public/python/ --max-line-length=100
+flake8 dou/ scripts/ tests/ --max-line-length=100
+
+# Type check com mypy
+mypy dou/ --ignore-missing-imports
 ```
 
 ## 📝 Arquivos de Saída

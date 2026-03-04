@@ -86,32 +86,50 @@
   "hotPaths": [
     {
       "path": "public/python/inlabs-filter-mre.py",
-      "accessCount": 38,
-      "lastAccessed": 1772600944221,
+      "accessCount": 39,
+      "lastAccessed": 1772601224626,
       "type": "file"
     },
     {
       "path": "public/python/dou_utils.py",
-      "accessCount": 16,
-      "lastAccessed": 1772600883732,
+      "accessCount": 20,
+      "lastAccessed": 1772601239320,
       "type": "file"
     },
     {
       "path": "test-mre.py",
-      "accessCount": 14,
-      "lastAccessed": 1772601016306,
+      "accessCount": 15,
+      "lastAccessed": 1772601223992,
       "type": "file"
     },
     {
       "path": "public/python/inlabs-auto-download-xml.py",
-      "accessCount": 7,
-      "lastAccessed": 1772600787855,
+      "accessCount": 9,
+      "lastAccessed": 1772601223988,
       "type": "file"
     },
     {
       "path": "public/python/dou_config.py",
-      "accessCount": 3,
-      "lastAccessed": 1772600784163,
+      "accessCount": 7,
+      "lastAccessed": 1772601239326,
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "accessCount": 6,
+      "lastAccessed": 1772601472729,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 5,
+      "lastAccessed": 1772601147148,
+      "type": "directory"
+    },
+    {
+      "path": "tests/test_utils.py",
+      "accessCount": 5,
+      "lastAccessed": 1772601422019,
       "type": "file"
     },
     {
@@ -121,9 +139,39 @@
       "type": "directory"
     },
     {
+      "path": "dou/__init__.py",
+      "accessCount": 3,
+      "lastAccessed": 1772601374447,
+      "type": "file"
+    },
+    {
+      "path": "cron-dou.sh",
+      "accessCount": 3,
+      "lastAccessed": 1772601454986,
+      "type": "file"
+    },
+    {
       "path": "REFACTOR_PLAN.md",
       "accessCount": 2,
       "lastAccessed": 1772600381785,
+      "type": "file"
+    },
+    {
+      "path": "requirements-dev.txt",
+      "accessCount": 2,
+      "lastAccessed": 1772601234823,
+      "type": "file"
+    },
+    {
+      "path": "dou/config.py",
+      "accessCount": 2,
+      "lastAccessed": 1772601276256,
+      "type": "file"
+    },
+    {
+      "path": "dou/utils.py",
+      "accessCount": 2,
+      "lastAccessed": 1772601276260,
       "type": "file"
     },
     {
@@ -133,15 +181,63 @@
       "type": "file"
     },
     {
-      "path": "",
-      "accessCount": 1,
-      "lastAccessed": 1772600787769,
-      "type": "directory"
-    },
-    {
       "path": "REFACTOR_PHASE2_SUMMARY.md",
       "accessCount": 1,
       "lastAccessed": 1772601059742,
+      "type": "file"
+    },
+    {
+      "path": "pyproject.toml",
+      "accessCount": 1,
+      "lastAccessed": 1772601150308,
+      "type": "file"
+    },
+    {
+      "path": "requirements.txt",
+      "accessCount": 1,
+      "lastAccessed": 1772601150325,
+      "type": "file"
+    },
+    {
+      "path": "scripts/test_mre.py",
+      "accessCount": 1,
+      "lastAccessed": 1772601255270,
+      "type": "file"
+    },
+    {
+      "path": "scripts/auto_download_xml.py",
+      "accessCount": 1,
+      "lastAccessed": 1772601255382,
+      "type": "file"
+    },
+    {
+      "path": "scripts/download_dou.py",
+      "accessCount": 1,
+      "lastAccessed": 1772601292838,
+      "type": "file"
+    },
+    {
+      "path": "tests/__init__.py",
+      "accessCount": 1,
+      "lastAccessed": 1772601401857,
+      "type": "file"
+    },
+    {
+      "path": "tests/conftest.py",
+      "accessCount": 1,
+      "lastAccessed": 1772601401969,
+      "type": "file"
+    },
+    {
+      "path": "tests/test_config.py",
+      "accessCount": 1,
+      "lastAccessed": 1772601402074,
+      "type": "file"
+    },
+    {
+      "path": "REFACTOR_PHASE3_SUMMARY.md",
+      "accessCount": 1,
+      "lastAccessed": 1772601498584,
       "type": "file"
     }
   ],

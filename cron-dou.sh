@@ -41,7 +41,7 @@ remove_duplicate() {
 # Horário 10h e 23h: Download + Filtragem MRE
 if [ "$1" = "download" ]; then
     echo "[$(date)] Iniciando download DOU + Filtragem MRE..."
-    python3 public/python/inlabs-filter-mre.py
+    python3 scripts/download_dou.py
     exit_code=$?
     if [ $exit_code -ne 0 ]; then
         echo "[$(date)] Erro no script Python (exit code: $exit_code)"
