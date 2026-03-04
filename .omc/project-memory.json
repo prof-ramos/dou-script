@@ -86,15 +86,39 @@
   "hotPaths": [
     {
       "path": "public/python/inlabs-filter-mre.py",
-      "accessCount": 26,
-      "lastAccessed": 1772600606369,
+      "accessCount": 38,
+      "lastAccessed": 1772600944221,
+      "type": "file"
+    },
+    {
+      "path": "public/python/dou_utils.py",
+      "accessCount": 16,
+      "lastAccessed": 1772600883732,
+      "type": "file"
+    },
+    {
+      "path": "test-mre.py",
+      "accessCount": 14,
+      "lastAccessed": 1772601016306,
       "type": "file"
     },
     {
       "path": "public/python/inlabs-auto-download-xml.py",
-      "accessCount": 5,
-      "lastAccessed": 1772600553240,
+      "accessCount": 7,
+      "lastAccessed": 1772600787855,
       "type": "file"
+    },
+    {
+      "path": "public/python/dou_config.py",
+      "accessCount": 3,
+      "lastAccessed": 1772600784163,
+      "type": "file"
+    },
+    {
+      "path": "public/python",
+      "accessCount": 3,
+      "lastAccessed": 1772600787790,
+      "type": "directory"
     },
     {
       "path": "REFACTOR_PLAN.md",
@@ -103,15 +127,21 @@
       "type": "file"
     },
     {
-      "path": "test-mre.py",
-      "accessCount": 2,
-      "lastAccessed": 1772600562989,
-      "type": "file"
-    },
-    {
       "path": "REFACTOR_PHASE1_SUMMARY.md",
       "accessCount": 1,
       "lastAccessed": 1772600661782,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 1,
+      "lastAccessed": 1772600787769,
+      "type": "directory"
+    },
+    {
+      "path": "REFACTOR_PHASE2_SUMMARY.md",
+      "accessCount": 1,
+      "lastAccessed": 1772601059742,
       "type": "file"
     }
   ],
